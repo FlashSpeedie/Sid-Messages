@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://192.168.0.207:5173",
+    origin: "https://sidmsg.onrender.com",
     credentials: true,
   })
 );
