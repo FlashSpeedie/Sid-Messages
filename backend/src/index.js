@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://sidlink-backend.onrender.com",
+    origin: "https://sidlink.onrender.com",
     credentials: true,
   })
 );
