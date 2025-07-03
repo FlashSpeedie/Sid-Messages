@@ -16,12 +16,10 @@ const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "https://sidlink.onrender.com",
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: ["https://sidlink.onrender.com"], // ✅ Frontend origin
+  credentials: true, // ✅ Required to allow cookies
+}));
 
 // API endpoint that returns "API Working"
 app.get("/", (req, res) => {
@@ -39,7 +37,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(PORT, "0.0.0.0", () => { 
+server.listen(PORT, "0.0.0.0", () => {
   console.log("server is running on PORT:" + PORT);
   connectDB();
 });
