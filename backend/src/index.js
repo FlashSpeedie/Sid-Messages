@@ -2,7 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+
 import path from "path";
+
 import { connectDB } from "./lib/db.js";
 
 import authRoutes from "./routes/auth.route.js";
@@ -14,29 +16,18 @@ dotenv.config();
 const PORT = process.env.PORT;
 const __dirname = path.resolve();
 
-// Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: ["https://sidlink.onrender.com"], // ✅ Frontend origin
-  credentials: true, // ✅ Required for cookies
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-// Test endpoint
-app.get("/", (req, res) => {
-  res.send("API Working");
-});
-
-// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-// 🛡️ Optional: fallback for unhandled /api routes to avoid sending index.html
-app.use("/api", (req, res, next) => {
-  res.status(404).json({ message: "API route not found" });
-});
-
-// Serving frontend in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
@@ -45,8 +36,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// Start server
-server.listen(PORT, "0.0.0.0", () => {
-  console.log("Server is running on PORT: " + PORT);
+server.listen(PORT, () => {
+  console.log("server is running on PORT:" + PORT);
   connectDB();
 });

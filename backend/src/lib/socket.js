@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["https://sidlink-backend.onrender.com"],
+    origin: ["http://localhost:5173"],
   },
 });
 
@@ -35,4 +35,3 @@ io.on("connection", (socket) => {
 });
 
 export { io, app, server };
-// To start the server, you can use the following code in your main file
