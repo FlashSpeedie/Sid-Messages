@@ -4,10 +4,9 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL =
-  import.meta.env.MODE === "development"
-    ? "https://sidlink-backend.onrender.com"
-    : "/";
+const BASE_URL = import.meta.env.MODE === "development"
+  ? "https://sidlink-backend.onrender.com"
+  : "/"; // Keep this as-is for socket.io
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -20,9 +19,7 @@ export const useAuthStore = create((set, get) => ({
 
   checkAuth: async () => {
     try {
-      const res = await axiosInstance.get("/api/auth/check", {
-        withCredentials: true,
-      });
+      const res = await axiosInstance.get("/auth/check");
 
       if (!res.data || typeof res.data !== "object" || !res.data._id) {
         console.warn("Invalid auth user data:", res.data);
@@ -30,15 +27,15 @@ export const useAuthStore = create((set, get) => ({
       } else {
         set({ authUser: res.data });
         get().connectSocket();
-        console.log("Connecting socket with userId:", res.data._id);
       }
     } catch (error) {
-      console.log("Error in checkAuth:", error?.response?.data || error.message);
+      console.log("Error in checkAuth:", error);
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
     }
-  },
+  }
+  ,
 
   signup: async (data) => {
     set({ isSigningUp: true });
@@ -57,16 +54,20 @@ export const useAuthStore = create((set, get) => ({
   login: async (data) => {
     set({ isLoggingIn: true });
     try {
-      const res = await axiosInstance.post("/api/auth/login", data);
+      const res = await axiosInstance.post("/auth/login", data);
       set({ authUser: res.data });
       toast.success("Logged in successfully");
       get().connectSocket();
+
+      // ✅ redirect to chat or dashboard
+      window.location.href = "/chat"; // or use navigate("/chat") if using React Router
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
       set({ isLoggingIn: false });
     }
-  },
+  }
+  ,
 
   logout: async () => {
     try {
