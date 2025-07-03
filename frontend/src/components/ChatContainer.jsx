@@ -20,15 +20,17 @@ const ChatContainer = () => {
   const messageEndRef = useRef(null);
 
   useEffect(() => {
+    if (!selectedUser?._id) return;
+
     getMessages(selectedUser._id);
 
     subscribeToMessages();
 
     return () => unsubscribeFromMessages();
-  }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+  }, [selectedUser?._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
 
   useEffect(() => {
-    if (messageEndRef.current && messages) {
+    if (messageEndRef.current && messages && Array.isArray(messages)) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
@@ -39,6 +41,21 @@ const ChatContainer = () => {
         <ChatHeader />
         <MessageSkeleton />
         <MessageInput />
+      </div>
+    );
+  }
+
+  // Debug logs
+  console.log("[ChatContainer] messages:", messages);
+  console.log("[ChatContainer] typeof messages:", typeof messages);
+  console.log("[ChatContainer] isArray:", Array.isArray(messages));
+
+  // Safe rendering: show error if messages is not an array
+  if (!Array.isArray(messages)) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center text-error p-8">
+        <h2 className="text-xl font-bold">🚨 Message Load Error</h2>
+        <p className="mt-2">Messages data is not an array. Check developer console for details.</p>
       </div>
     );
   }
@@ -54,7 +71,7 @@ const ChatContainer = () => {
             className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
             ref={messageEndRef}
           >
-            <div className=" chat-image avatar">
+            <div className="chat-image avatar">
               <div className="size-10 rounded-full border">
                 <img
                   src={
@@ -89,4 +106,5 @@ const ChatContainer = () => {
     </div>
   );
 };
+
 export default ChatContainer;
