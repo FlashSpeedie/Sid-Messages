@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["https://sidlink.onrender.com"],
+    origin: ["https://sidlink-backend.onrender.com"],
   },
 });
 
