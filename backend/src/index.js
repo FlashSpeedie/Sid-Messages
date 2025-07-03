@@ -28,6 +28,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
+// Serve static frontend in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
@@ -36,7 +37,12 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(PORT, () => {
-  console.log("server is running on PORT:" + PORT);
+// ✅ Add this:
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
+server.listen(PORT || 5001, () => {
+  console.log("server is running on PORT:" + (PORT || 5001));
   connectDB();
 });
