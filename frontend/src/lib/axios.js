@@ -1,11 +1,8 @@
 import axios from "axios";
 
-const BASE_URL =
-  import.meta.env.MODE === "development"
-    ? "http://localhost:5001/api"
-    : "https://sidlink-backend.onrender.com/api";
-
 export const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true,
+  baseURL: import.meta.env.MODE === "development" 
+    ? "https://sidlink-backend.onrender.com/api"
+    : "/api",
+  withCredentials: true, // ✅ This is needed to send cookies!
 });
